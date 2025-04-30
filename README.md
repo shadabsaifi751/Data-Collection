@@ -1,4 +1,5 @@
 ## User Data Collection and API System
+<img width="960" alt="image" src="https://github.com/user-attachments/assets/b9adad32-e5b7-4c49-b8a5-4b53ec047256" />
 
 ### Features
 - Cron job fetches 5 users every 5 minutes from the RandomUser API

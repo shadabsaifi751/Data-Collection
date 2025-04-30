@@ -1,40 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+## User Data Collection and API System
 
-## Getting Started
+### Features
+- Cron job fetches 5 users every 5 minutes from the RandomUser API
+- Stores users and their location in PostgreSQL (`users` and `locations` tables)
+- REST API with support for:
+  - Filtering by gender, city, and country
+  - Pagination
+  - Field selection
+- UI to search, filter, and paginate users
+- Code includes clean and clear comments for better understanding
 
-First, run the development server:
+### Tech Stack
+- Next.js
+- PostgreSQL
+- Node-Cron
+- Axios
+- Lodash Debounce
+- swr
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+# PostgreSQL connection string
+DATABASE_URL=postgresql://your_db_user:your_db_password@localhost:5432/your_db_name
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Create PostgreSQL Tables
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+```sql
+-- User Table
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255),
+  email VARCHAR(255) UNIQUE,
+  gender VARCHAR(50),
+  location_id INT,
+  created_at TIMESTAMP DEFAULT NOW()
+);
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+-- Location Table
+CREATE TABLE IF NOT EXISTS locations (
+  id SERIAL PRIMARY KEY,
+  city VARCHAR(255),
+  country VARCHAR(255)
+);
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### How to Run
+1. Setup `.env` with PostgreSQL URL
+2. Create tables using given SQL
+3. Run `node utils/cronJob.js`
+4. Start app with `npm run dev`
+5. Open [http://localhost:3000](http://localhost:3000)
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+### API Example:
+`/api/users?gender=male&country=Germany&page=2&limit=5&fields=name,email`
